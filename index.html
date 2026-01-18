@@ -68,29 +68,33 @@
   <div id="result" class="result"></div>
 
   <script>
-    function calculate() {
-      const amount = parseFloat(document.getElementById("amount").value);
-      const tdsRate = parseFloat(document.getElementById("tdsRate").value);
-      const vdsRate = parseFloat(document.getElementById("vdsRate").value);
+  function calculate() {
+    const totalAmount = parseFloat(document.getElementById("amount").value);
+    const tdsRate = parseFloat(document.getElementById("tdsRate").value);
+    const vdsRate = parseFloat(document.getElementById("vdsRate").value);
 
-      if (isNaN(amount) || isNaN(tdsRate) || isNaN(vdsRate)) {
-        document.getElementById("result").innerHTML =
-          "Please enter all values correctly.";
-        return;
-      }
-
-      const tds = (amount * tdsRate) / 100;
-      const vds = (amount * vdsRate) / 100;
-      const payable = amount - tds - vds;
-
-      document.getElementById("result").innerHTML = `
-        <strong>Invoice Amount:</strong> ৳${amount.toFixed(2)}<br>
-        <strong>TDS (${tdsRate}%):</strong> ৳${tds.toFixed(2)}<br>
-        <strong>VDS (${vdsRate}%):</strong> ৳${vds.toFixed(2)}<br><br>
-        <strong>Payable Amount:</strong> ৳${payable.toFixed(2)}
-      `;
+    if (isNaN(totalAmount) || isNaN(tdsRate) || isNaN(vdsRate)) {
+      document.getElementById("result").innerHTML =
+        "Please enter all values correctly.";
+      return;
     }
-  </script>
 
-</body>
-</html>
+    const tdsPercent = tdsRate / 100;
+    const vdsPercent = vdsRate / 100;
+
+    // BASIC AMOUNT (Reverse calculation)
+    const basicAmount = totalAmount / (1 + tdsPercent + vdsPercent);
+
+    const tds = basicAmount * tdsPercent;
+    const vds = basicAmount * vdsPercent;
+    const payable = totalAmount - tds - vds;
+
+    document.getElementById("result").innerHTML = `
+      <strong>Total Invoice (Including VAT & TDS):</strong> ৳${totalAmount.toFixed(2)}<br>
+      <strong>Basic Amount:</strong> ৳${basicAmount.toFixed(2)}<br>
+      <strong>TDS (${tdsRate}%):</strong> ৳${tds.toFixed(2)}<br>
+      <strong>VDS (${vdsRate}%):</strong> ৳${vds.toFixed(2)}<br><br>
+      <strong>Payable Amount:</strong> ৳${payable.toFixed(2)}
+    `;
+  }
+</script>
